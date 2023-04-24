@@ -34,7 +34,7 @@ public class AuthController {
         return principal.toString();
     }
 
-    @PostMapping("/token")
+    @PostMapping("/login")
     public String token(@RequestBody AuthRequest request){
         try{
             Authentication authentication = authenticationManager.authenticate(

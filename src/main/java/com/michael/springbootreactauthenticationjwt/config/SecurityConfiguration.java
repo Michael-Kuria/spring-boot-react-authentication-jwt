@@ -51,7 +51,7 @@ public class SecurityConfiguration {
         return httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/token").permitAll()
+                        .requestMatchers("/login").permitAll()
                         .requestMatchers("/home").authenticated()
                         .requestMatchers("/api/students").hasRole(UserRole.ADMIN.name())
                         .anyRequest().authenticated())
