@@ -22,7 +22,7 @@ public enum UserRole {
                 .map(permissions -> new SimpleGrantedAuthority(permissions.getPermission()))
                 .collect(Collectors.toSet());
 
-        authorities.add(new SimpleGrantedAuthority("ROLE_" + this.name()));
+        authorities.add(new SimpleGrantedAuthority("ROLE_"+this.name()));
 
         return authorities;
     }
