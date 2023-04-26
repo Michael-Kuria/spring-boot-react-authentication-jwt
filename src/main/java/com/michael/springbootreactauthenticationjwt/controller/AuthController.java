@@ -2,6 +2,7 @@ package com.michael.springbootreactauthenticationjwt.controller;
 
 import com.michael.springbootreactauthenticationjwt.model.ApplicationUser;
 import com.michael.springbootreactauthenticationjwt.model.AuthRequest;
+import com.michael.springbootreactauthenticationjwt.model.AuthResponse;
 import com.michael.springbootreactauthenticationjwt.service.ApplicationUserService;
 import com.michael.springbootreactauthenticationjwt.service.TokenService;
 import org.slf4j.Logger;
@@ -22,6 +23,7 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final ApplicationUserService applicationUserService;
     private static final Logger LOG = LoggerFactory.getLogger(AuthController.class);
+    private String tokenB;
 
     public AuthController(TokenService tokenService, AuthenticationManager authenticationManager, ApplicationUserService applicationUserService) {
         this.tokenService = tokenService;
@@ -34,30 +36,34 @@ public class AuthController {
         return principal.toString();
     }
 
+//    @CrossOrigin(origins = "http://localhost:8080")
     @PostMapping("/login")
-    public String token(@RequestBody AuthRequest request){
+    public void token(@RequestBody AuthRequest request){
         try{
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
             );
-            ApplicationUser user = (ApplicationUser) applicationUserService.loadUserByUsername(request.getEmail());
+            ApplicationUser user = (ApplicationUser) applicationUserService.loadUserByUsername(authentication.getName());
 
             System.out.println("What is happening");
             LOG.info("Token requested for user: '{}'",user.toString());
-            String token = tokenService.generateToken((ApplicationUser) user);
-            LOG.info("Token granted: {}", token);
-            return token;
+            tokenB = tokenService.generateToken(user);
+            LOG.info("Token granted: {}", tokenB);
+
 
         }catch (BadCredentialsException ex){
-            return ex.getMessage();
+            System.out.println( ex.getMessage());
         }
 
 
     }
 
-    @GetMapping("/authenticated")
-      public String getAuthentication(Authentication authentication){
-        return authentication.getName();
+
+    @CrossOrigin(origins = "http://localhost:8080")
+    @GetMapping("/login")
+    public AuthResponse getAuthentication(){
+
+        return new AuthResponse(tokenB);
     }
 
 
