@@ -1,22 +1,26 @@
 import { useState } from "react";
 import "./App.css";
-import LoginForm from "./components/LoginForm";
-import StudentPage from "./components/Studentpage/StudentPage";
-import { AuthProvider } from "./Utils/AuthContext";
+import { AuthProvider } from "./components/context/AuthProvider";
+import { Router, Routes, Route } from "react-router-dom";
+import Login from "./components/home/Login";
+import ProtectedRoute from "./components/helpers/ProtectedRoute";
+import Home from "./components/home/Home";
 
 function App() {
-  const [bearerToken, setBearerToken] = useState("");
-
   return (
     <AuthProvider>
       <main>
-        <LoginForm setBearerToken={setBearerToken} />
-
-        <div className="div">
-          {bearerToken !== "" ? <StudentPage token={bearerToken} /> : ""}
-          <div>{bearerToken}</div>
-          <div></div>
-        </div>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <Home />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
       </main>
     </AuthProvider>
   );
