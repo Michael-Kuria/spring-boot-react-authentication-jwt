@@ -8,7 +8,7 @@ const Login = () => {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const [isError, setIsError] = useState(false);
-  const { login, isAuthenticated } = useAuth();
+  const { userLogin, isAuthenticated } = useAuth();
 
   function handleInputChange(e, stateFunction) {
     stateFunction(e.target.value);
@@ -24,13 +24,13 @@ const Login = () => {
     Client.authenticate(email, password)
       .then((response) => {
         const { token } = response.data;
-        login(token);
+        userLogin(token);
         setPassword("");
         setEmail("");
         setIsError("");
       })
       .catch((error) => {
-        console.log(error);
+        console.log(error.message);
         setIsError(true);
       });
   };
@@ -47,7 +47,7 @@ const Login = () => {
                 fluid
                 autoFocus
                 name="email"
-                icon="email"
+                icon="mail"
                 iconPosition="left"
                 placeholder="email"
                 onChange={(e) => handleInputChange(e, setEmail)}

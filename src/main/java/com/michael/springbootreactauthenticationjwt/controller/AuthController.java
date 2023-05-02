@@ -36,9 +36,9 @@ public class AuthController {
         return principal.toString();
     }
 
-//    @CrossOrigin(origins = "http://localhost:8080")
+    @CrossOrigin(origins = "http://localhost:8080")
     @PostMapping("/login")
-    public void token(@RequestBody AuthRequest request){
+    public AuthResponse token(@RequestBody AuthRequest request){
         try{
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
@@ -49,22 +49,22 @@ public class AuthController {
             LOG.info("Token requested for user: '{}'",user.toString());
             tokenB = tokenService.generateToken(user);
             LOG.info("Token granted: {}", tokenB);
-
+            return new AuthResponse(tokenB);
 
         }catch (BadCredentialsException ex){
-            System.out.println( ex.getMessage());
+            throw new BadCredentialsException(ex.getMessage());
+//            System.out.println( ex.getMessage());
         }
 
-
     }
 
-
-    @CrossOrigin(origins = "http://localhost:8080")
-    @GetMapping("/login")
-    public AuthResponse getAuthentication(){
-
-        return new AuthResponse(tokenB);
-    }
+//
+//    @CrossOrigin(origins = "http://localhost:8080")
+//    @GetMapping("/login")
+//    public AuthResponse getAuthentication(){
+//
+//        return new AuthResponse(tokenB);
+//    }
 
 
 }

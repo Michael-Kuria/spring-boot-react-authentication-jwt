@@ -3,10 +3,11 @@ import axios from "axios";
 export const Client = {
   authenticate,
   getStudents,
+  auth,
 };
 
 const instance = axios.create({
-  baseURL: "https://localhost:8080/",
+  baseURL: "http://localhost:8080",
 });
 
 function authenticate(email, password) {
@@ -18,9 +19,18 @@ function authenticate(email, password) {
     }
   );
 }
-
 function getStudents(user) {
   return instance.get("/api/students", {
     headers: { Authorization: `Bearer ${user}` },
+  });
+}
+
+function auth(email, password) {
+  return fetch("https://localhost:8080/login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(email, password),
   });
 }
