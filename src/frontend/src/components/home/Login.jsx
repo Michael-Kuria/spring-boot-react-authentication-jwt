@@ -3,6 +3,7 @@ import { useAuth } from "../context/AuthProvider";
 import { Navigate } from "react-router-dom";
 import { Button, Form, Grid, Message, Segment } from "semantic-ui-react";
 import { Client } from "../../client/Client";
+import { parseJwt } from "../helpers/Utils";
 
 const Login = () => {
   const [email, setEmail] = useState();
@@ -24,7 +25,10 @@ const Login = () => {
     Client.authenticate(email, password)
       .then((response) => {
         const { token } = response.data;
-        userLogin(token);
+        const data = parseJwt(token);
+        const user = { data, token };
+
+        userLogin(JSON.stringify(user));
         setPassword("");
         setEmail("");
         setIsError("");

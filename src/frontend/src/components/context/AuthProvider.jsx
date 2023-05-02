@@ -7,12 +7,18 @@ import { createContext, useContext, useEffect, useState } from "react";
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(getUser());
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
-    if (storedUser) setUser(storedUser);
+    if (storedUser) {
+      setUser((prev) => JSON.parse(storedUser));
+    }
   }, []);
+
+  function getUser() {
+    return JSON.parse(localStorage.getItem("user"));
+  }
 
   function userLogin(user) {
     setUser(user);
@@ -25,12 +31,22 @@ export const AuthProvider = ({ children }) => {
   }
 
   function isAuthenticated() {
-    return user !== null;
+    let user = localStorage.getItem("user");
+
+    if (!user) return false;
+
+    // if user has token expired, logout user
+    user = JSON.parse(user);
+    if (Date.now() > user.data.exp * 1000) {
+      userLogout();
+      return false;
+    }
+    return true;
   }
 
   return (
     <AuthContext.Provider
-      value={{ user, userLogin, userLogout, isAuthenticated }}
+      value={{ user, getUser, userLogin, userLogout, isAuthenticated }}
     >
       {children}
     </AuthContext.Provider>
